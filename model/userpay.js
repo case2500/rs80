@@ -15,7 +15,9 @@ const userpaySchema = new mongoose.Schema({
   cloudinary_id: {
     type: String,
   },
- 
+  status:{
+    type: String, default: 0
+  },
 },
 { timestamps: true }
 );

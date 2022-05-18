@@ -19,6 +19,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       price: req.body.price,
       avatar: result.secure_url,
       cloudinary_id: result.public_id,
+      status: 1
     });
     // Save user
     await user.save();
@@ -28,9 +29,34 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
+
+router.post("/cash", upload.single("image"), async (req, res) => {
+  try {
+    // Upload image to cloudinary
+    console.log(req.body)
+    // const result = await cloudinary.uploader.upload(req.file.path,
+    //   {
+    //     upload_preset: 'casenetwork',
+    //   }
+    // );
+    // Create new user
+    let user = new Userpay({
+      name: req.body.name,
+      price: req.body.price,
+      avatar: 'https://res.cloudinary.com/casenetwork/image/upload/v1652855738/casenetwork/images_42_cxsvd0.jpg',
+      cloudinary_id: "",
+      status: 0
+    });
+    // Save user
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+
 router.get("/", async (req, res) => {
-
-
   const d = new Date();
   let day = d.getDate();
   let month = d.getMonth();
@@ -40,7 +66,7 @@ router.get("/", async (req, res) => {
   // const testday = (dayjs(test).locale('th').add(543, 'year').format('DD/MM/YYYY'))
 
   try {
-    var mysort = { createdAt: -1 };
+    var mysort = { updatedAt : -1,status: - 1 };
     let user = await Userpay.find().sort(mysort);
 
     usermap = user.map(doc => {
@@ -53,9 +79,10 @@ router.get("/", async (req, res) => {
         datepay: dayjs(doc.datepay).locale('th').add(543, 'year').format('DD/MM/YYYY'),
         createdAt: dayjs(doc.createdAt).locale('th').add(543, 'year').format('DD/MM/YYYY'),
         updatedAt:  dayjs(doc.updatedAt).locale('th').add(543, 'year').format('DD/MM/YYYY'),
+  status: doc.status
       }
     })
-    // console.log(usermap)
+  console.log(usermap)
     // console.log(testday)
 
     res.json(usermap);
@@ -82,21 +109,6 @@ router.delete("/:id", async (req, res) => {
     console.log(err);
   }
 });
-
-// router.get("/filter", async (req, res) => {
-
-
-//   console.log(req.query.keyword)
-
-
-//   var name="สม";
-//   const users =  User.find({name: { $regex: '.*' + name + '.*' } }).limit(5);
-//       // {"firstname": {$regex : `^${req.body.firstname}.*` , $options: 'si' }}
-
-//   // const users = await User.find({"name": {$regex : `^${req.body.keyword}.*` , $options: 'si' }})
-//   res.status(200).json(users);
-//   console.log(users)
-// });
 
 
 router.put("/:id", upload.single("image"), async (req, res) => {
