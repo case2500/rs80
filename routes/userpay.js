@@ -92,16 +92,17 @@ router.get("/", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+ console.log(req.params.id)
   try {
     // Find user by id
     let user = await Userpay.findById(req.params.id);
     // Delete image from cloudinary
-    await cloudinary.uploader.destroy(user.cloudinary_id,
-      {
-        upload_preset: 'casenetwork',
-      }
+    // await cloudinary.uploader.destroy(user.cloudinary_id,
+    //   {
+    //     upload_preset: 'casenetwork',
+    //   }
 
-    );
+    // );
     // Delete user from db
     await user.remove();
     res.json(user);
